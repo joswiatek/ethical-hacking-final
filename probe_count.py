@@ -16,7 +16,7 @@ def run_dump(prefix, duration):
             total_ssids[line] += 1
 
     most = total_ssids.most_common(1)
-    print(most[0])
+    print(most[0][0])
         
 if __name__ == '__main__':
     interface = sys.argv[1]

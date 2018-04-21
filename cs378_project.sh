@@ -5,8 +5,17 @@ if [[ "$(id -u)" != "0" ]]; then
 	exit 0
 fi
 
-# Ethernet value may change depending on type of networking
-ETH="eth0"
+trap control_c SIGINT
+
+function control_c() {
+	echo -e "\e[91mCTRL C Detected!\n"
+	pkill -f dnsmasq
+	pkill -f hostapd
+	pkill -f tmux
+	pkill -f tshark
+	echo -e "\e[91mExiting!"
+	exit $?
+}
 
 # Need to setup wireless device
 
@@ -40,40 +49,40 @@ sed -i "s/CaptiveWifi/$SSID/g" hostapd.conf
 sed -i 's/channel=10/channel=6/g' hostapd.conf
 
 bash start.sh
-tmux attach
+#tmux attach
 
 # Capture all packets from specific address
-#tshark -i wlan0mon -w wlan0mon_capture 2>&1 &
+tshark -i wlan0mon -w wlan0mon_capture 2>&1 &
 
 # What else can we do?
-# Watch for new associations
 
-#while true; do
+# Watch for new associations
+while true; do
 	# Leases are stored in /var/lib/misc/dnsmasq.leases
-#	MACS=`awk '{ print $2 }' /var/lib/misc/dnsmasq.leases | paste -d ' ' -s`
-#	echo -e "MACS: $MACS\n"
+	MACS=`awk '{ print $2 }' /var/lib/misc/dnsmasq.leases | paste -d ' ' -s`
+	echo -e "MACS: $MACS\n"
 
 	# Approve Internet
-#	for mac in $MACS; do
-#		echo -e "Adding rule for $mac\n"
+	for mac in $MACS; do
+		echo -e "Adding rule for $mac\n"
 #		/sbin/iptables -I internet 1 -t mangle -m mac --mac-source $mac -j RETURN
-#	done
-#	LEASES=`awk '{ print $3 }' /var/lib/misc/dnsmasq.leases | paste -d , -s`
-#	echo -e "LEASES: $LEASES\n"
-
-	# nmap hosts
-	#nmap -A $LEASES -oN $LEASES
+	done
+	LEASES=`awk '{ print $3 }' /var/lib/misc/dnsmasq.leases | paste -d , -s`
+	echo -e "LEASES: $LEASES\n"
 
 	# Exploit host somehow
+	# here
+
+
 
 	# Generate 0 or 1 every 30s to decide to drop internet
-	#while true; do
-	#	var=$(($RANDOM%2))
-	#	if [[ $var -eq "1" ]] then;
-	#		ifconfig $ETH down
-	#		sleep 5
-	#	fi
-	#	sleep 30
-	#done
-#	sleep 5
-#done
+	while true; do
+		var=$(($RANDOM%2))
+		if [[ $var -eq "1" ]]; then
+			ifconfig eth0 down
+			sleep 5
+			ifconfig eth0 up
+		fi
+	done
+	sleep 15
+done
