@@ -9,10 +9,12 @@ trap control_c SIGINT
 
 function control_c() {
 	echo -e "\e[91mCTRL C Detected!\n"
+	pkill -f tshark
 	pkill -f dnsmasq
 	pkill -f hostapd
 	pkill -f tmux
-	pkill -f tshark
+	rm -r captive_portal/
+	ifconfig eth0 up
 	echo -e "\e[91mExiting!"
 	exit $?
 }
@@ -35,6 +37,8 @@ echo "Perform Probe Count"
 SSID=$(python probe_count.py wlan0mon 30)
 echo -e "SSID: $SSID\n"
 
+read -p "Press enter to continue"
+
 # Install prereqs for Captive Portal
 apt update
 apt -y install hostapd dnsmasq apache2
@@ -45,44 +49,51 @@ cd captive_portal
 for f in $(ls); do sed -i 's/wlan0/wlan0mon/g' $f; done
 
 sed -i 's/FR/US/g' hostapd.conf
-sed -i "s/CaptiveWifi/$SSID/g" hostapd.conf
+sed -i "s/CaptiveWifi/$SSID DO NOT CONNECT/g" hostapd.conf
 sed -i 's/channel=10/channel=6/g' hostapd.conf
+#cp -r ../portal/templates/ templates/
+cp -r ../portal/static/ static/
+#cp ../portal/server.py ./
+
+tshark -i wlan0mon -w wlan0mon_capture 2>&1 &
 
 bash start.sh
 #tmux attach
+#read -p "Press enter to continue"
 
 # Capture all packets from specific address
-tshark -i wlan0mon -w wlan0mon_capture 2>&1 &
+#jobs
 
 # What else can we do?
 
 # Watch for new associations
-while true; do
+#read -p "Press enter to continue"
+#while true; do
 	# Leases are stored in /var/lib/misc/dnsmasq.leases
-	MACS=`awk '{ print $2 }' /var/lib/misc/dnsmasq.leases | paste -d ' ' -s`
-	echo -e "MACS: $MACS\n"
+#	MACS=`awk '{ print $2 }' /var/lib/misc/dnsmasq.leases | paste -d ' ' -s`
+#	echo -e "MACS: $MACS\n"
 
 	# Approve Internet
-	for mac in $MACS; do
-		echo -e "Adding rule for $mac\n"
+#	for mac in $MACS; do
+#		echo -e "Adding rule for $mac\n"
 #		/sbin/iptables -I internet 1 -t mangle -m mac --mac-source $mac -j RETURN
-	done
-	LEASES=`awk '{ print $3 }' /var/lib/misc/dnsmasq.leases | paste -d , -s`
-	echo -e "LEASES: $LEASES\n"
+#	done
+#	LEASES=`awk '{ print $3 }' /var/lib/misc/dnsmasq.leases | paste -d , -s`
+#	echo -e "LEASES: $LEASES\n"
 
 	# Exploit host somehow
 	# here
 
 
 
-	# Generate 0 or 1 every 30s to decide to drop internet
-	while true; do
-		var=$(($RANDOM%2))
-		if [[ $var -eq "1" ]]; then
-			ifconfig eth0 down
-			sleep 5
-			ifconfig eth0 up
-		fi
-	done
-	sleep 15
-done
+	# Generate 0 or 1 every 15s to decide to drop internet
+	#while true; do
+	#	var=$(($RANDOM%2))
+	#	if [[ $var -eq "1" ]]; then
+	#		ifconfig eth0 down
+	#		sleep 5
+	#		ifconfig eth0 up
+	#	fi
+	#done
+	#sleep 15
+#done
