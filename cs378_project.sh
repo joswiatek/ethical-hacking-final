@@ -27,7 +27,7 @@ read -p "Press enter to continue"
 
 # Install prereqs for Captive Portal
 apt update
-apt -y install hostapd dnsmasq apache2
+apt -y install hostapd dnsmasq apache2 tmux
 
 git clone https://github.com/AloysAugustin/captive_portal.git
 cd captive_portal
