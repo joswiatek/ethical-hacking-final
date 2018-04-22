@@ -5,20 +5,6 @@ if [[ "$(id -u)" != "0" ]]; then
 	exit 0
 fi
 
-trap control_c SIGINT
-
-function control_c() {
-	echo -e "\e[91mCTRL C Detected!\n"
-	pkill -f tshark
-	pkill -f dnsmasq
-	pkill -f hostapd
-	pkill -f tmux
-	rm -r captive_portal/
-	ifconfig eth0 up
-	echo -e "\e[91mExiting!"
-	exit $?
-}
-
 # Need to setup wireless device
 
 airmon-ng check kill
@@ -51,49 +37,15 @@ for f in $(ls); do sed -i 's/wlan0/wlan0mon/g' $f; done
 sed -i 's/FR/US/g' hostapd.conf
 sed -i "s/CaptiveWifi/$SSID DO NOT CONNECT/g" hostapd.conf
 sed -i 's/channel=10/channel=6/g' hostapd.conf
-#cp -r ../portal/templates/ templates/
-cp -r ../portal/static/ static/
-#cp ../portal/server.py ./
+cp -r ../portal/templates/* templates
+cp -r ../portal/static/* static
+cp ../portal/server.py ./
 
-tshark -i wlan0mon -w wlan0mon_capture 2>&1 &
+# Add what we want to do to the start script
+echo -e "tmux select-pane -t 0\n" >> start.sh
+echo -e "tmux split-window -v\n" >> start.sh
+echo -e 'tmux send-keys "tshark -i wlan0mon -w ../wlan0mon_capture" C-m\n' >> start.sh
+echo -e "tmux split-window -v\n" >> start.sh
 
-bash start.sh
-#tmux attach
-#read -p "Press enter to continue"
-
-# Capture all packets from specific address
-#jobs
-
-# What else can we do?
-
-# Watch for new associations
-#read -p "Press enter to continue"
-#while true; do
-	# Leases are stored in /var/lib/misc/dnsmasq.leases
-#	MACS=`awk '{ print $2 }' /var/lib/misc/dnsmasq.leases | paste -d ' ' -s`
-#	echo -e "MACS: $MACS\n"
-
-	# Approve Internet
-#	for mac in $MACS; do
-#		echo -e "Adding rule for $mac\n"
-#		/sbin/iptables -I internet 1 -t mangle -m mac --mac-source $mac -j RETURN
-#	done
-#	LEASES=`awk '{ print $3 }' /var/lib/misc/dnsmasq.leases | paste -d , -s`
-#	echo -e "LEASES: $LEASES\n"
-
-	# Exploit host somehow
-	# here
-
-
-
-	# Generate 0 or 1 every 15s to decide to drop internet
-	#while true; do
-	#	var=$(($RANDOM%2))
-	#	if [[ $var -eq "1" ]]; then
-	#		ifconfig eth0 down
-	#		sleep 5
-	#		ifconfig eth0 up
-	#	fi
-	#done
-	#sleep 15
-#done
+bash start.sh 
+tmux attach
