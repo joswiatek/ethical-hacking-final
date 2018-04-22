@@ -47,5 +47,7 @@ echo -e "tmux split-window -v\n" >> start.sh
 echo -e 'tmux send-keys "tshark -i wlan0mon -w ../wlan0mon_capture" C-m\n' >> start.sh
 echo -e "tmux split-window -v\n" >> start.sh
 
+read -p "Press enter to continue"
+
 bash start.sh 
 tmux attach
