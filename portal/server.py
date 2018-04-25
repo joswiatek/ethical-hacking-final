@@ -48,8 +48,6 @@ def catch_all(path):
     # return redirect("/login?"+urllib.urlencode({'orig_url': request.url}))
     return redirect("http://10.20.0.1/login?" + urllib.urlencode({'orig_url': request.url}))
 
-def check_and_post_on_twitter
-
 if __name__ == "__main__":
 #    app.debug = True
     app.run('0.0.0.0', port=80)
