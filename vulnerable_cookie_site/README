@@ -1,0 +1,5 @@
+Serve with:
+
+php -S <interal IP address>:80
+
+within this directory

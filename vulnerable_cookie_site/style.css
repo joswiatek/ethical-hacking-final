@@ -1,0 +1,47 @@
+#box {
+    background-color: LightGoldenRodYellow;
+    padding: 20px;
+    width: 400px;
+    height: 200px;
+    border: 2px solid DarkGoldenRod;
+    box-shadow: 2px 2px 2px 2px;
+    border-radius: 4px;
+    position: absolute;
+    left: 0;
+    right: 0;
+    top: 0;
+    bottom: 0;
+    margin: auto;
+}
+
+html, body {
+    height: 100%;
+    margin: 0;
+}
+
+#main {
+    background-color: Gray;
+    min-height: 100%;
+}
+
+h2 {
+    text-align: center;
+}
+
+h3 {
+    text-align: center;
+}
+
+#lorem {
+    overflow: hidden;
+    height: 140px;
+}
+
+#data, #login, table {
+    margin: auto;
+}
+
+input[type=submit] {
+    display: block;
+    width: 100%;
+}
