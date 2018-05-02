@@ -7,6 +7,7 @@ pkill -f hostapd
 pkill -f tmux
 cd ..
 rm -r captive_portal/
+cp /etc/hosts.BAK /etc/hosts
 echo -e "\e[91mExiting!"
 exit $?
 

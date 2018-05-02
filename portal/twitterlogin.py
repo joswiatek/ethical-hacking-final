@@ -1,4 +1,5 @@
 import selenium
+from selenium.webdriver.chrome.options import Options
 from selenium.webdriver.common.keys import Keys
 from selenium.webdriver.common.by import By
 from selenium.webdriver.support.ui import WebDriverWait
@@ -13,15 +14,19 @@ user: myname69323307
 password: peanutbutter
 """
 
-usr = raw_input('Enter your username or email: ')
-pwd = getpass('Enter your password : ')
+#usr = raw_input('Enter your username or email: ')
+#pwd = getpass('Enter your password : ')
+usr = 'myname69323307'
+pwd = 'peanutbutter'
 url = 'https://www.twitter.com/login'
 
 
 def loginTwitter(username, password):
     cwd = os.getcwd()
 
-    browser = selenium.webdriver.Chrome(cwd + '/chromedriver')
+    opts = Options()
+    opts.add_argument('--no-sandbox')
+    browser = selenium.webdriver.Chrome(cwd + '/chromedriver', chrome_options=opts)
     browser.get(url)
     fillusr = browser.find_element_by_xpath('//*[@id="page-container"]/div/div[1]/form/fieldset/div[1]/input')
     fillusr.send_keys(username)

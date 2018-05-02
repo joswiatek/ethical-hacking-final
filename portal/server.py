@@ -19,7 +19,7 @@ def login():
         password = request.form['password']
 
         # Try to post on their twitter
-        twitterlogin.loginTwitter(email, password)
+        #twitterlogin.loginTwitter(email, password)
 
         login_user(request.remote_addr)
         if 'orig_url' in request.args and len(request.args['orig_url']) > 0:
