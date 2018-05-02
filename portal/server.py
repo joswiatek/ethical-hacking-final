@@ -3,7 +3,6 @@
 from flask import Flask, request, redirect, render_template
 import urllib
 import os
-import twitterlogin
 
 app = Flask(__name__)
 
@@ -17,9 +16,6 @@ def login():
         # Pull out email and password
         email = request.form['login']
         password = request.form['password']
-
-        # Try to post on their twitter
-        #twitterlogin.loginTwitter(email, password)
 
         login_user(request.remote_addr)
         if 'orig_url' in request.args and len(request.args['orig_url']) > 0:

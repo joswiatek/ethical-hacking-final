@@ -1,6 +1,7 @@
 #!/bin/bash
 
 echo -e "\e[91mKilling everything\n"
+./clean_firewall.sh
 pkill -f tshark
 pkill -f dnsmasq
 pkill -f hostapd

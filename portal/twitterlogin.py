@@ -16,7 +16,7 @@ password: peanutbutter
 
 usr = raw_input('Enter your username or email: ')
 pwd = getpass('Enter your password : ')
-#usr = 'myname69323307'
+#usr = 'dummyhacking'
 #pwd = 'peanutbutter'
 url = 'https://www.twitter.com/login'
 

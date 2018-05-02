@@ -43,6 +43,7 @@ cp ../portal/server.py ./
 cp ../portal/twitterlogin.py ./
 cp ../portal/chromedriver ./
 cp ../portal/pwned.jpg ./
+cp -r ../vulnerable_cookie_site/ .
 
 # Backup hosts file for blocking
 cp /etc/hosts /etc/hosts.BAK
@@ -52,14 +53,15 @@ echo -e "127.0.0.1\tdonaldjtrump.com\n" >> /etc/hosts
 echo -e "127.0.0.1\tbreitbart.com\n" >> /etc/hosts
 
 # Add what we want to do to the start script
+echo -e "tmux split-window -v\n" >> start.sh
+echo -e 'tmux send-keys "cd vulnerable_cookie_site" C-m\n' >> start.sh
+echo -e 'tmux send-keys "php -S 10.20.0.1:8000" C-m\n' >> start.sh
+
 echo -e "tmux select-pane -t 0\n" >> start.sh
 echo -e "tmux split-window -v\n" >> start.sh
 echo -e 'tmux send-keys "tshark -i wlan0mon -w ../wlan0mon_capture" C-m\n' >> start.sh
 echo -e "tmux split-window -v\n" >> start.sh
 
-echo -e "tmux split-window -v\n" >> start.sh
-echo -e 'tmux send-keys "php -S 10.20.0.1:8000" C-m\n' >> start.sh
-echo -e "tmux split-window -v\n" >> start.sh
 
 read -p "Press enter to continue"
 
