@@ -14,10 +14,10 @@ user: myname69323307
 password: peanutbutter
 """
 
-#usr = raw_input('Enter your username or email: ')
-#pwd = getpass('Enter your password : ')
-usr = 'myname69323307'
-pwd = 'peanutbutter'
+usr = raw_input('Enter your username or email: ')
+pwd = getpass('Enter your password : ')
+#usr = 'myname69323307'
+#pwd = 'peanutbutter'
 url = 'https://www.twitter.com/login'
 
 
@@ -62,5 +62,6 @@ def loginTwitter(username, password):
     # Submit the tweet
     browser.find_element_by_css_selector('button.tweet-action').click()
 
-loginTwitter(usr, pwd)
-time.sleep(5)
+if __name__ == '__main__':
+    loginTwitter(usr, pwd)
+    time.sleep(5)
