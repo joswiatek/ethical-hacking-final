@@ -4,14 +4,15 @@ import sys
 import sqlite3
 
 def usage():
-    print('python extract_packets.py pcap_file cookies_db')
+    print('python extract_packets.py pcap_file cookies_db port')
 
-if len(sys.argv) < 3:
+if len(sys.argv) < 4:
     print('Insufficient arguments')
     usage()
     exit(1)
 
 pcap_file = sys.argv[1]
+port = int(sys.argv[3])
 pcap = None
 
 try:
@@ -32,9 +33,10 @@ class HTTP_Packet:
     RESPONSE = 'RESPONSE'
     INVALID  = 'INVALID'
 
-    def __init__(self, src, dst, payload):
+    def __init__(self, src, dst, payload, port):
         self.src = src
         self.dst = dst
+        self.port = port
 
         idx = payload.find('\r\n\r\n')
         if idx == -1:
@@ -79,7 +81,8 @@ class HTTP_Packet:
         sqls = []
         for cookie in self.cookies:
             sqls.append((self.src, self.headers['Host'] + self.path,
-                cookie['name'], cookie['value'], self.headers['User-Agent']))
+                cookie['name'], cookie['value'], self.headers['User-Agent'],
+                str(self.port)))
         return sqls
 
 cookies = sqlite3.connect(sys.argv[2])
@@ -91,6 +94,7 @@ c.execute('''
             name text NOT NULL,
             value text NOT NULL,
             user_agent text,
+            port text,
             PRIMARY KEY (src, url, name)
         );''')
 cookies.commit()
@@ -98,13 +102,16 @@ cookies.commit()
 cookie_packets = []
 for packet in pcap:
     try:
-        if packet[TCP].dport == 80 or packet[TCP].sport == 80:
+        if packet[TCP].dport in [80, port] or packet[TCP].sport in [80, port]:
+            p = 80
+            if packet[TCP].dport == port or packet[TCP].sport == port:
+                p = port
             if type(packet[TCP].payload) == scapy.packet.Raw:
                 payload = codecs.decode(bytes(packet[TCP].payload), encoding='utf-8', errors='replace')
-                http_packet = HTTP_Packet(packet[IP].src, packet[IP].dst, payload)
+                http_packet = HTTP_Packet(packet[IP].src, packet[IP].dst, payload, p)
                 if http_packet.is_valid():
                     if 'Cookie' in http_packet.headers:
-                        c.executemany('INSERT OR REPLACE INTO cookies VALUES (?,?,?,?,?)', http_packet.cookie_sql())
+                        c.executemany('INSERT OR REPLACE INTO cookies VALUES (?,?,?,?,?,?)', http_packet.cookie_sql())
                         cookies.commit()
     except IndexError as e:
         continue
