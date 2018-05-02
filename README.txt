@@ -8,3 +8,5 @@
 8. python3 extract_packets.py <pcap file> <sqlite3 db> <port PHP is running on (8000)> 
 9. python3 browse_cookies.py <victim_ip> <website to spoof> <sqlite3 db>
 
+Pls
+
