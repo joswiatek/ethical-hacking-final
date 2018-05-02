@@ -24,6 +24,7 @@ if len(cookies) == 0:
 
 opts = Options()
 opts.add_argument('user-agent=' + cookies[0][2])
+opts.add_argument('--no-sandbox')
 driver = webdriver.Chrome(executable_path='portal/chromedriver', chrome_options=opts)
 driver.get('http://' + url)
 
